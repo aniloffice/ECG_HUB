@@ -104,7 +104,7 @@
     .sync-badge.ok   { background: rgba(34,197,94,0.12); color: var(--success); }
     .sync-badge.fail { background: rgba(240,64,64,0.10); color: var(--danger); }
 
-    /* ── INFO BOX (used in Gist section) ── */
+    /* ── INFO BOX ── */
     .info-box {
       background: rgba(59,127,245,0.07);
       border: 1px solid rgba(59,127,245,0.18);
@@ -214,11 +214,6 @@
       color: rgba(255,255,255,0.92); letter-spacing: -0.5px;
     }
     .app-name { font-size: 12px; font-weight: 600; color: var(--text-1); text-align: center; line-height: 1.3; max-width: 126px; }
-    .app-chip {
-      font-size: 9px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; padding: 2px 9px; border-radius: 20px;
-      background: var(--accent-glow); color: var(--accent);
-    }
 
     @keyframes appTap {
       0%   { transform: scale(1); }
@@ -422,14 +417,15 @@
         <p class="f-msg f-ok"  id="cpOk"></p>
       </div>
 
-      <!-- SHARED SYNC (GitHub Gist) — NEW SECTION -->
+      <!-- SHARED SYNC (GitHub Gist) -->
       <div class="a-section">
         <div class="a-section-title">&#9729; Shared Sync &mdash; GitHub Gist</div>
         <div class="info-box">
           <strong>Why is this needed?</strong> Links saved above are stored only in
           <em>your browser</em>. Other users on other computers see empty links.<br><br>
           Connect a <strong>GitHub Gist</strong> and every user will automatically
-          load the same links when they open the hub.
+          load the same links when they open the hub.<br><br>
+          <strong>Filename must be exactly:</strong> <code>ecg-hub-links.json</code>
         </div>
         <div class="f-group">
           <label class="f-label">Gist ID</label>
@@ -501,9 +497,55 @@ async function fetchGistLinks(id) {
   });
   if (!r.ok) throw new Error('GitHub returned ' + r.status + '. Check your Gist ID.');
   const data = await r.json();
-  const file = data.files[GIST_FILE];
-  if (!file) throw new Error('File "' + GIST_FILE + '" not found in this Gist.');
-  return JSON.parse(file.content);
+
+  // ── FIX: robust file lookup (exact → case-insensitive → first .json file → first file) ──
+  const files = data.files || {};
+  const fileKeys = Object.keys(files);
+
+  // 1. Exact match
+  let fileKey = fileKeys.find(k => k === GIST_FILE);
+
+  // 2. Case-insensitive match
+  if (!fileKey) {
+    fileKey = fileKeys.find(k => k.toLowerCase() === GIST_FILE.toLowerCase());
+  }
+
+  // 3. First .json file in the gist
+  if (!fileKey) {
+    fileKey = fileKeys.find(k => k.toLowerCase().endsWith('.json'));
+  }
+
+  // 4. Absolute fallback: first file
+  if (!fileKey && fileKeys.length > 0) {
+    fileKey = fileKeys[0];
+  }
+
+  if (!fileKey) {
+    throw new Error('No files found in this Gist. Make sure the Gist is not empty.');
+  }
+
+  // Warn in console if we fell back from the expected name
+  if (fileKey !== GIST_FILE) {
+    console.warn(
+      '[ECG Hub] Expected file "' + GIST_FILE + '" but found: ' + fileKeys.join(', ') +
+      '. Using "' + fileKey + '" instead. Rename the file to "' + GIST_FILE + '" for best results.'
+    );
+  }
+
+  let content = files[fileKey].content;
+
+  // Handle truncated files (large gists): fetch raw URL
+  if (files[fileKey].truncated) {
+    const raw = await fetch(files[fileKey].raw_url);
+    if (!raw.ok) throw new Error('Failed to fetch raw Gist content.');
+    content = await raw.text();
+  }
+
+  try {
+    return JSON.parse(content);
+  } catch(e) {
+    throw new Error('Gist file "' + fileKey + '" contains invalid JSON. Check the file contents.');
+  }
 }
 
 async function pushGistLinks(id, pat, links) {
