@@ -12,10 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ── RESET ──────────────────────────────────────── */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-    /* ── DARK THEME (Default) ───────────────────────── */
     :root {
       --bg:          #090d18;
       --bg-alt:      #0f1624;
@@ -36,7 +34,6 @@
       --inp-border:  rgba(71,130,255,0.20);
     }
 
-    /* ── LIGHT THEME ────────────────────────────────── */
     body.light {
       --bg:          #f2f6fd;
       --bg-alt:      #e8eef9;
@@ -57,7 +54,6 @@
       --inp-border:  rgba(30,80,180,0.18);
     }
 
-    /* ── BASE ───────────────────────────────────────── */
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
@@ -67,473 +63,239 @@
       transition: background 0.4s, color 0.4s;
     }
 
-    /* ── HEADER ─────────────────────────────────────── */
+    /* ── POPUP BLOCKED BANNER ── */
+    #popupBanner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      background: #f59e0b;
+      color: #000;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      align-items: center;
+      gap: 10px;
+      animation: slideDown 0.3s ease;
+    }
+    #popupBanner a {
+      font-weight: 700; color: #000;
+      text-decoration: underline; word-break: break-all;
+    }
+    .pb-close {
+      margin-left: auto; flex-shrink: 0;
+      background: rgba(0,0,0,0.15); border: none;
+      border-radius: 5px; padding: 3px 10px;
+      cursor: pointer; font-weight: 700;
+      font-size: 13px; color: #000;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
+
+    /* ── SYNC BADGE ── */
+    .sync-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 600; padding: 2px 9px;
+      border-radius: 20px; opacity: 0; transition: opacity 0.4s;
+    }
+    .sync-badge.show { opacity: 1; }
+    .sync-badge.ok   { background: rgba(34,197,94,0.12); color: var(--success); }
+    .sync-badge.fail { background: rgba(240,64,64,0.10); color: var(--danger); }
+
+    /* ── INFO BOX (used in Gist section) ── */
+    .info-box {
+      background: rgba(59,127,245,0.07);
+      border: 1px solid rgba(59,127,245,0.18);
+      border-radius: 9px; padding: 11px 13px;
+      font-size: 11.5px; color: var(--text-2);
+      line-height: 1.70; margin-bottom: 13px;
+    }
+    .info-box strong { color: var(--text-1); }
+    .info-box code {
+      background: rgba(59,127,245,0.12); color: var(--accent);
+      padding: 1px 5px; border-radius: 4px;
+      font-family: 'Consolas', 'Courier New', monospace; font-size: 11px;
+    }
+
+    /* ── HEADER ── */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      height: 60px;
-      padding: 0 28px;
+      position: sticky; top: 0; z-index: 200;
+      height: 60px; padding: 0 28px;
       background: var(--bg-alt);
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       transition: background 0.4s, border-color 0.4s;
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 11px;
+    .logo { display: flex; align-items: center; gap: 11px; }
+    .logo-badge {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.4s;
     }
-
-  .logo-badge {
-    width: 36px;
-    height: 36px;
-    background: var(); 
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.4s;
-    }
-
     .logo-badge svg { width: 30px; height: 30px; }
+    .logo-name { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.01em; }
+    .logo-sub  { font-size: 10.5px; font-weight: 400; color: var(--text-2); margin-top: 1px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
 
-    .logo-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-1);
-      letter-spacing: -0.01em;
-    }
-
-    .logo-sub {
-      font-size: 10.5px;
-      font-weight: 400;
-      color: var(--text-2);
-      margin-top: 1px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ── HEADER BUTTONS ─────────────────────────────── */
     .h-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 13px;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 13px; border-radius: 7px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-2); font-size: 12px; font-weight: 500;
+      font-family: inherit; cursor: pointer; transition: all 0.2s;
     }
+    .h-btn:hover { background: var(--surface); color: var(--text-1); border-color: var(--border-md); }
+    .h-btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .h-btn-accent:hover { background: var(--accent-dk); color: #fff; border-color: var(--accent-dk); }
 
-    .h-btn:hover {
-      background: var(--surface);
-      color: var(--text-1);
-      border-color: var(--border-md);
-    }
+    /* ── MAIN ── */
+    main { max-width: 980px; margin: 0 auto; padding: 26px 24px 60px; }
 
-    .h-btn-accent {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .h-btn-accent:hover {
-      background: var(--accent-dk);
-      color: #fff;
-      border-color: var(--accent-dk);
-    }
-
-    /* ── MAIN AREA ──────────────────────────────────── */
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 26px 24px 60px;
-    }
-
-    /* ── STATUS BAR ─────────────────────────────────── */
     .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 9px;
+      display: flex; align-items: center; gap: 9px;
       background: rgba(34,197,94,0.06);
       border: 1px solid rgba(34,197,94,0.15);
-      border-radius: 9px;
-      padding: 9px 16px;
-      font-size: 11.5px;
-      color: var(--text-2);
-      margin-bottom: 28px;
+      border-radius: 9px; padding: 9px 16px;
+      font-size: 11.5px; color: var(--text-2); margin-bottom: 28px;
     }
-
     .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--success);
-      flex-shrink: 0;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--success); flex-shrink: 0;
       box-shadow: 0 0 0 3px rgba(34,197,94,0.20);
     }
 
-    /* ── SECTION LABEL ──────────────────────────────── */
     .sec-label {
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-bottom: 18px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: 0.11em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 18px;
     }
 
-    /* ═══════════════════════════════════════════════
-       APP GRID — Smartphone Home-Screen Style
-    ══════════════════════════════════════════════ */
+    /* ── APP GRID ── */
     .app-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
       gap: 12px;
     }
-
     .app-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      padding: 22px 10px 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      border: 1px solid white;
-      background: transparent;
+      display: flex; flex-direction: column; align-items: center; gap: 15px;
+      padding: 22px 10px 16px; border-radius: 14px; cursor: pointer;
+      border: 1px solid white; background: transparent;
       transition: background 0.22s, border-color 0.22s;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      outline: none;
+      user-select: none; -webkit-tap-highlight-color: transparent; outline: none;
     }
+    .app-item:hover { background: var(--surface); border-color: var(--border-md); }
+    .app-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    .app-item:hover {
-      background: var(--surface, #1246c4);
-      border-color: var(--border-md);
-    }
-
-    .app-item:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    /* iOS-style app icon shell */
     .app-shell {
-      width: 100px;
-      height: 100px;
-      border-radius: 10px;
-      overflow: hidden;
-      flex-shrink: 0;
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.40),
-        0 1px 4px  rgba(0,0,0,0.22);
-      transition:
-        transform 0.25s cubic-bezier(.34,1.56,.64,1),
-        box-shadow 0.25s ease;
-      background: var(--surface-alt);
-      position: relative;
+      width: 100px; height: 100px; border-radius: 10px;
+      overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.40), 0 1px 4px rgba(0,0,0,0.22);
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease;
+      background: var(--surface-alt); position: relative;
     }
-
-    /* Hover — lift & scale */
     .app-item:hover .app-shell {
       transform: scale(1.19) translateY(-20px);
-      box-shadow:
-        0 18px 36px rgba(0,0,0,0.42),
-        0 4px 12px  var(--accent-glow);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.42), 0 4px 12px var(--accent-glow);
     }
-
-    /* Active / tap — press down */
     .app-item:active .app-shell {
       transform: scale(0.91) translateY(1px);
-      box-shadow: 0 2px 8px rgba(236, 233, 233, 0.28);
+      box-shadow: 0 2px 8px rgba(236,233,233,0.28);
       transition-duration: 0.08s;
     }
-
-    .app-shell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* Fallback tile when PNG is missing */
+    .app-shell img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .app-fallback {
-      width: 100%;
-      height: 100%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-size: 23px;
-      font-weight: 700;
+      width: 100%; height: 100%; display: none;
+      align-items: center; justify-content: center;
+      font-size: 23px; font-weight: 700;
       font-family: 'Sora', sans-serif;
-      color: rgba(255,255,255,0.92);
-      letter-spacing: -0.5px;
+      color: rgba(255,255,255,0.92); letter-spacing: -0.5px;
     }
-
-    .app-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-1);
-      text-align: center;
-      line-height: 1.3;
-      max-width: 126px;
-    }
-
-    /*.app-desc {
-      font-size: 10.5px;
-      font-weight: 400;
-      color: var(--text-2);
-      text-align: center;
-      line-height: 1.5;
-      max-width: 132px;
-    }*/
-
+    .app-name { font-size: 12px; font-weight: 600; color: var(--text-1); text-align: center; line-height: 1.3; max-width: 126px; }
     .app-chip {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 2px 9px;
-      border-radius: 20px;
-      background: var(--accent-glow);
-      color: var(--accent);
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 2px 9px; border-radius: 20px;
+      background: var(--accent-glow); color: var(--accent);
     }
 
-    /* Launch bounce animation */
     @keyframes appTap {
       0%   { transform: scale(1); }
       30%  { transform: scale(0.86) translateY(2px); }
       65%  { transform: scale(1.14) translateY(-6px); }
       85%  { transform: scale(0.97) translateY(-2px); }
-      100% { transform: scale(1)   translateY(0px); }
+      100% { transform: scale(1) translateY(0px); }
     }
+    .app-shell.bouncing { animation: appTap 0.38s cubic-bezier(.22,1,.36,1) forwards; }
 
-    .app-shell.bouncing {
-      animation: appTap 0.38s cubic-bezier(.22,1,.36,1) forwards;
-    }
-
-    /* ═══════════════════════════════════════════════
-       ADMIN OVERLAY & MODAL
-    ══════════════════════════════════════════════ */
+    /* ── ADMIN OVERLAY ── */
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
+      display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 999; align-items: center; justify-content: center; padding: 16px;
     }
-
     .overlay.open { display: flex; }
 
     .modal {
-      background: var(--modal-bg);
-      border: 1px solid var(--border-md);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 430px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 24px 22px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
-      transition: background 0.4s;
+      background: var(--modal-bg); border: 1px solid var(--border-md);
+      border-radius: 20px; width: 100%; max-width: 430px;
+      max-height: 90vh; overflow-y: auto; padding: 24px 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.55); transition: background 0.4s;
     }
-
-    /* Scrollbar inside modal */
     .modal::-webkit-scrollbar { width: 4px; }
     .modal::-webkit-scrollbar-track { background: transparent; }
     .modal::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
 
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .modal-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-1);
-    }
-
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--text-1); }
     .modal-close {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: transparent;
-      color: var(--text-2);
-      font-size: 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.18s;
-      font-family: inherit;
+      width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 7px;
+      background: transparent; color: var(--text-2); font-size: 15px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s; font-family: inherit;
     }
+    .modal-close:hover { background: var(--surface-alt); color: var(--text-1); border-color: var(--border-md); }
 
-    .modal-close:hover {
-      background: var(--surface-alt);
-      color: var(--text-1);
-      border-color: var(--border-md);
-    }
-
-    /* Screens */
     .screen { display: none; }
     .screen.on { display: block; }
 
-    /* Form Elements */
     .f-group { margin-bottom: 14px; }
-
     .f-label {
-      display: block;
-      font-size: 10.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: var(--text-2);
-      margin-bottom: 6px;
+      display: block; font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--text-2); margin-bottom: 6px;
     }
-
     .f-input {
-      width: 100%;
-      padding: 10px 12px;
-      background: var(--inp-bg);
-      border: 1px solid var(--inp-border);
-      border-radius: 9px;
-      color: var(--text-1);
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; padding: 10px 12px; background: var(--inp-bg);
+      border: 1px solid var(--inp-border); border-radius: 9px;
+      color: var(--text-1); font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
+    .f-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .f-input-url { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; }
 
-    .f-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
+    .btn { width: 100%; padding: 10px; border: none; border-radius: 9px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; }
+    .btn-blue { background: var(--accent); color: #fff; }
+    .btn-blue:hover { background: var(--accent-dk); box-shadow: 0 4px 14px var(--accent-glow); }
+    .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); margin-top: 8px; }
+    .btn-ghost:hover { background: var(--surface-alt); color: var(--text-1); }
+    .btn-red { background: transparent; color: var(--danger); border: 1px solid rgba(240,64,64,0.25); }
+    .btn-red:hover { background: rgba(240,64,64,0.07); }
 
-    .f-input-url {
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 11.5px;
-    }
-
-    /* Buttons */
-    .btn {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-blue {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn-blue:hover {
-      background: var(--accent-dk);
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-2);
-      border: 1px solid var(--border);
-      margin-top: 8px;
-    }
-
-    .btn-ghost:hover {
-      background: var(--surface-alt);
-      color: var(--text-1);
-    }
-
-    .btn-red {
-      background: transparent;
-      color: var(--danger);
-      border: 1px solid rgba(240,64,64,0.25);
-    }
-
-    .btn-red:hover {
-      background: rgba(240,64,64,0.07);
-    }
-
-    /* Feedback messages */
-    .f-msg {
-      font-size: 11.5px;
-      margin-top: 8px;
-      text-align: center;
-      display: none;
-    }
-
+    .f-msg { font-size: 11.5px; margin-top: 8px; text-align: center; display: none; }
     .f-err { color: var(--danger); }
     .f-ok  { color: var(--success); }
 
-    /* Admin sections */
     .a-section { margin-bottom: 22px; }
-
-    .a-section-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-1);
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 14px;
-    }
-
+    .a-section-title { font-size: 12px; font-weight: 700; color: var(--text-1); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
     .link-row { margin-bottom: 11px; }
-
-    .link-row-label {
-      display: block;
-      font-size: 10.5px;
-      font-weight: 600;
-      color: var(--text-2);
-      margin-bottom: 4px;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 9px;
-      margin-top: 8px;
-    }
-
+    .link-row-label { display: block; font-size: 10.5px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+    .btn-row { display: flex; gap: 9px; margin-top: 8px; }
     .btn-row .btn { flex: 1; }
 
-    /* ── FOOTER ─────────────────────────────────────── */
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 11px;
-      color: var(--text-3);
-      border-top: 1px solid var(--border);
-    }
-
-    /* ── GLOBAL SCROLLBAR ───────────────────────────── */
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); }
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -542,78 +304,74 @@
 
 <body>
 
-<!-- ══════════════════════════════════════════
-     HEADER
-══════════════════════════════════════════ -->
+<!-- POPUP BLOCKED BANNER -->
+<div id="popupBanner">
+  <span>&#9888;&#65039; Popup blocked by browser. &nbsp;
+    <a id="popupLink" target="_blank" rel="noopener noreferrer">Click here to open the application &#8594;</a>
+  </span>
+  <button class="pb-close" onclick="document.getElementById('popupBanner').style.display='none'">&#10005;</button>
+</div>
+
+<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-badge">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <style>
-        .cls-1{fill:#4285f4;fill-rule:evenodd;}
-        .cls-2{fill:#1e88e5;fill-rule:evenodd;}
-        .cls-3{fill:#aecbfa;}
-        .cls-4{fill:#aecbfa;fill-rule:evenodd;}
-        .cls-5{fill:#669df6;}
-      </style>
-    </defs>
-    <polygon class="cls-1" points="20.69 12.43 12 16.78 12 22 20.69 17.65 20.69 12.43"></polygon>
-    <polygon class="cls-1" points="17.22 8.09 17.22 12.43 20.69 10.7 20.69 6.35 17.22 8.09"></polygon>
-    <polygon class="cls-1" points="12 15.04 15.48 13.31 15.48 8.96 12 10.7 12 15.04"></polygon>
-    <polygon class="cls-3" points="6.78 4.61 3.31 6.35 6.78 8.09 10.26 6.35 6.78 4.61"></polygon>
-    <polygon class="cls-4" points="12 2 8.52 3.74 12 5.48 17.22 8.09 20.69 6.35 12 2"></polygon>
-    <polygon class="cls-3" points="12 7.22 8.52 8.96 12 10.7 15.48 8.96 12 7.22"></polygon>
-    <path class="cls-5" d="M8.52,15v5.22L12,22V16.78Zm2.61,5.22-1.74-.87V16.78l1.74.87Z"></path>
-    <path class="cls-5" d="M3.31,6.35v11.3l3.47,1.74V8.09Zm2.61,11.3-1.75-.87v-10l1.75.87Z"></path>
-    <path class="cls-5" d="M8.52,9,12,10.7V15L8.52,13.31Zm2.61,4.35v-3L9.39,9.45v3Z"></path>
-    </svg>
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .cls-1{fill:#4285f4;fill-rule:evenodd;}
+            .cls-2{fill:#1e88e5;fill-rule:evenodd;}
+            .cls-3{fill:#aecbfa;}
+            .cls-4{fill:#aecbfa;fill-rule:evenodd;}
+            .cls-5{fill:#669df6;}
+          </style>
+        </defs>
+        <polygon class="cls-1" points="20.69 12.43 12 16.78 12 22 20.69 17.65 20.69 12.43"></polygon>
+        <polygon class="cls-1" points="17.22 8.09 17.22 12.43 20.69 10.7 20.69 6.35 17.22 8.09"></polygon>
+        <polygon class="cls-1" points="12 15.04 15.48 13.31 15.48 8.96 12 10.7 12 15.04"></polygon>
+        <polygon class="cls-3" points="6.78 4.61 3.31 6.35 6.78 8.09 10.26 6.35 6.78 4.61"></polygon>
+        <polygon class="cls-4" points="12 2 8.52 3.74 12 5.48 17.22 8.09 20.69 6.35 12 2"></polygon>
+        <polygon class="cls-3" points="12 7.22 8.52 8.96 12 10.7 15.48 8.96 12 7.22"></polygon>
+        <path class="cls-5" d="M8.52,15v5.22L12,22V16.78Zm2.61,5.22-1.74-.87V16.78l1.74.87Z"></path>
+        <path class="cls-5" d="M3.31,6.35v11.3l3.47,1.74V8.09Zm2.61,11.3-1.75-.87v-10l1.75.87Z"></path>
+        <path class="cls-5" d="M8.52,9,12,10.7V15L8.52,13.31Zm2.61,4.35v-3L9.39,9.45v3Z"></path>
+      </svg>
     </div>
     <div>
       <div class="logo-name">ECG HUB</div>
       <div class="logo-sub">Central landing page providing access to all ECG applications and services</div>
     </div>
   </div>
-
   <div class="header-right">
-    <button class="h-btn" id="themeBtn" onclick="toggleTheme()">☀️ Light Mode</button>
-    <button class="h-btn h-btn-accent" onclick="openAdmin()">⚙ Admin</button>
+    <button class="h-btn" id="themeBtn" onclick="toggleTheme()">&#9728;&#65039; Light Mode</button>
+    <button class="h-btn h-btn-accent" onclick="openAdmin()">&#9881; Admin</button>
   </div>
 </header>
 
-
-<!-- ══════════════════════════════════════════
-     MAIN CONTENT
-══════════════════════════════════════════ -->
+<!-- MAIN -->
 <main>
   <div class="status-bar">
     <div class="status-dot"></div>
     <span>All systems operational</span>
     <span style="margin-left:auto; opacity:.65">6 applications active</span>
+    <span class="sync-badge" id="syncBadge"></span>
   </div>
-
   <div class="sec-label">Applications</div>
   <div class="app-grid" id="appGrid"></div>
 </main>
 
-<footer>
-  © 2026 ECG Application Team &nbsp;·&nbsp; ECG Hub v2.0
-</footer>
+<footer>&#169; 2026 ECG Application Team &nbsp;&middot;&nbsp; ECG Hub v2.1</footer>
 
-
-<!-- ══════════════════════════════════════════
-     ADMIN MODAL
-══════════════════════════════════════════ -->
+<!-- ADMIN MODAL -->
 <div class="overlay" id="adminOverlay">
   <div class="modal">
 
-    <!-- ─ LOGIN SCREEN ─────────────────────── -->
+    <!-- LOGIN SCREEN -->
     <div class="screen on" id="loginScreen">
       <div class="modal-head">
-        <span class="modal-title">🔐 Admin Access</span>
-        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">✕</button>
+        <span class="modal-title">&#128272; Admin Access</span>
+        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">&#10005;</button>
       </div>
-
       <div class="f-group">
         <label class="f-label" for="adminPassInput">Admin Password</label>
         <input class="f-input" type="password" id="adminPassInput"
@@ -625,37 +383,38 @@
       <p class="f-msg f-err" id="loginErr"></p>
     </div>
 
-    <!-- ─ ADMIN MANAGEMENT SCREEN ──────────── -->
+    <!-- ADMIN PANEL -->
     <div class="screen" id="adminScreen">
       <div class="modal-head">
-        <span class="modal-title">⚙ Admin Panel</span>
-        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">✕</button>
+        <span class="modal-title">&#9881; Admin Panel</span>
+        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">&#10005;</button>
       </div>
 
-      <!-- Application Links Section -->
+      <!-- Application Links -->
       <div class="a-section">
-        <div class="a-section-title">📎 Application Links</div>
+        <div class="a-section-title">&#128206; Application Links</div>
         <div id="linksEditor"></div>
         <div class="btn-row">
-          <button class="btn btn-blue" onclick="saveLinks()">💾 Save Links</button>
+          <button class="btn btn-blue" onclick="saveLinks()">&#128190; Save Links</button>
           <button class="btn btn-red"  onclick="doLogout()">Logout</button>
         </div>
-        <p class="f-msg f-ok" id="saveOk">✓ Links saved and applied!</p>
+        <p class="f-msg f-ok"  id="saveOk"></p>
+        <p class="f-msg f-err" id="saveErr"></p>
       </div>
 
-      <!-- Change Password Section -->
+      <!-- Change Password -->
       <div class="a-section">
-        <div class="a-section-title">🔑 Change Password</div>
+        <div class="a-section-title">&#128273; Change Password</div>
         <div class="f-group">
-          <label class="f-label" for="cpCurr">Current Password</label>
+          <label class="f-label">Current Password</label>
           <input class="f-input" type="password" id="cpCurr" placeholder="Current password">
         </div>
         <div class="f-group">
-          <label class="f-label" for="cpNew">New Password</label>
+          <label class="f-label">New Password</label>
           <input class="f-input" type="password" id="cpNew" placeholder="New password (min 6 chars)">
         </div>
         <div class="f-group">
-          <label class="f-label" for="cpConf">Confirm New Password</label>
+          <label class="f-label">Confirm New Password</label>
           <input class="f-input" type="password" id="cpConf" placeholder="Re-enter new password">
         </div>
         <button class="btn btn-blue" onclick="changePass()">Update Password</button>
@@ -663,184 +422,195 @@
         <p class="f-msg f-ok"  id="cpOk"></p>
       </div>
 
+      <!-- SHARED SYNC (GitHub Gist) — NEW SECTION -->
+      <div class="a-section">
+        <div class="a-section-title">&#9729; Shared Sync &mdash; GitHub Gist</div>
+        <div class="info-box">
+          <strong>Why is this needed?</strong> Links saved above are stored only in
+          <em>your browser</em>. Other users on other computers see empty links.<br><br>
+          Connect a <strong>GitHub Gist</strong> and every user will automatically
+          load the same links when they open the hub.
+        </div>
+        <div class="f-group">
+          <label class="f-label">Gist ID</label>
+          <input class="f-input f-input-url" type="text" id="gistId"
+                 placeholder="e.g. a1b2c3d4e5f6a1b2c3d4">
+        </div>
+        <div class="f-group">
+          <label class="f-label">GitHub Token (saved on this device only)</label>
+          <input class="f-input f-input-url" type="password" id="gistPat"
+                 placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-blue" onclick="saveSyncConfig()">&#128279; Save &amp; Test</button>
+          <button class="btn btn-red"  onclick="clearSyncConfig()">Clear Sync</button>
+        </div>
+        <p class="f-msg" id="syncMsg"></p>
+
+        <div style="margin-top:14px;">
+          <label class="f-label">Paste this JSON as your Gist file content</label>
+          <textarea class="f-input f-input-url" id="gistDefaultJson"
+                    rows="6" readonly
+                    style="resize:none; margin-top:6px; font-size:11px;"></textarea>
+        </div>
+      </div>
+
     </div><!-- /adminScreen -->
-  </div><!-- /modal -->
-</div><!-- /overlay -->
+  </div>
+</div>
 
-
-<!-- ══════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════ -->
 <script>
-
-/* ─────────────────────────────────────────────
-   APP DEFINITIONS
-   Add your PNG filenames in the `icon` field.
-   Place the PNG files in the same folder as index.html.
-───────────────────────────────────────────── */
+/* ── APP DEFINITIONS ── */
 const APPS = [
-  {
-    id: 'stores',
-    name: 'ECG LOCKER',
-    //desc: 'Materials belongs to application team.',
-    icon: 'stores.png',      // ← already exists
-    //badge: 'Stores',
-    fb: '#2563eb',
-    fi: 'IC'
-  },
-  {
-    id: 'ticket',
-    name: 'ECG TICKET FORGE',
-    //desc: 'Ticket management system for issue tracking, support requests, bug reporting, and service management.',
-    icon: 'ticket.png',      // ← add this PNG
-    //badge: 'Operations',
-    fb: '#7c3aed',
-    fi: 'IF'
-  },
-  {
-    id: 'frontline',
-    name: 'ECG DISCOVERY',
-    //desc: 'Customer requirement capture, opportunity assessment, solution discovery, pre-sales activities, and RFQ/RFP analysis.',
-    icon: 'Discovery.png',   // ← add this PNG
-    //badge: 'Pre-Sales',
-    fb: '#0891b2',
-    fi: 'FC'
-  },
-  {
-    id: 'rma',
-    name: 'ECG EXECUTION',
-    //desc: 'Order execution, acceptance/rejection workflow, delivery tracking, returns, and RMA processing.',
-    icon: 'execution.png',         // ← add this PNG
-    //badge: 'Service',
-    fb: '#dc2626',
-    fi: 'RM'
-  },
-  {
-    id: 'nexus',
-    name: 'ECG DOCS',
-    //desc: 'Central repository for documents, datasheets, manuals, SOPs, technical notes, and knowledge sharing.',
-    icon: 'docs.png',       // ← add this PNG
-    //badge: 'Resources',
-    fb: '#059669',
-    fi: 'NK'
-  },
-  {
-    id: 'analytics',
-    name: 'ECG MASTER',
-    //desc: 'Executive reporting suite with live metrics and cross-platform KPI insights.',
-    icon: 'master.png',   // ← add this PNG
-    //badge: 'Analytics',
-    fb: '#d97706',
-    fi: 'CA'
-  }
+  { id:'stores',    name:'ECG LOCKER',       icon:'stores.png',    fb:'#2563eb', fi:'IC' },
+  { id:'ticket',    name:'ECG TICKET FORGE', icon:'ticket.png',    fb:'#7c3aed', fi:'IF' },
+  { id:'frontline', name:'ECG DISCOVERY',    icon:'Discovery.png', fb:'#0891b2', fi:'FC' },
+  { id:'rma',       name:'ECG EXECUTION',    icon:'execution.png', fb:'#dc2626', fi:'RM' },
+  { id:'nexus',     name:'ECG DOCS',         icon:'docs.png',      fb:'#059669', fi:'NK' },
+  { id:'analytics', name:'ECG MASTER',       icon:'master.png',    fb:'#d97706', fi:'CA' }
 ];
 
+const GIST_FILE = 'ecg-hub-links.json';
+const _dp = atob('RUNHQDI=') + atob('MDI2');
 
-/* ─────────────────────────────────────────────
-   STORAGE  —  Links & Password
-───────────────────────────────────────────── */
-// Default credentials — change on first login via Admin Panel.
-const _dp = atob('RUNHQDI=') + atob('MDI2');   // see your private note
+/* ── STORAGE ── */
+const getPass      = ()    => localStorage.getItem('ecg_pw') || _dp;
+const storePass    = p     => localStorage.setItem('ecg_pw', p);
+const storeLinks   = obj   => localStorage.setItem('ecg_links', JSON.stringify(obj));
+const getGistCfg   = ()    => ({ id: localStorage.getItem('ecg_gist_id') || '', pat: localStorage.getItem('ecg_gist_pat') || '' });
+const saveGistCfg  = (i,p) => { localStorage.setItem('ecg_gist_id', i); localStorage.setItem('ecg_gist_pat', p); };
+const clearGistCfg = ()    => { localStorage.removeItem('ecg_gist_id'); localStorage.removeItem('ecg_gist_pat'); };
 
-function getPass() {
-  return localStorage.getItem('ecg_pw') || _dp;
-}
-function storePass(p) {
-  localStorage.setItem('ecg_pw', p);
-}
 function getLinks() {
+  try { const r = localStorage.getItem('ecg_links'); if (r) return JSON.parse(r); } catch(e) {}
+  const d = {}; APPS.forEach(a => d[a.id] = ''); return d;
+}
+
+/* ── URL SANITISER ── */
+function sanitizeUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+  return url;
+}
+
+/* ── GIST API ── */
+async function fetchGistLinks(id) {
+  const r = await fetch('https://api.github.com/gists/' + id, {
+    headers: { Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) throw new Error('GitHub returned ' + r.status + '. Check your Gist ID.');
+  const data = await r.json();
+  const file = data.files[GIST_FILE];
+  if (!file) throw new Error('File "' + GIST_FILE + '" not found in this Gist.');
+  return JSON.parse(file.content);
+}
+
+async function pushGistLinks(id, pat, links) {
+  const body = {};
+  body[GIST_FILE] = { content: JSON.stringify(links, null, 2) };
+  const r = await fetch('https://api.github.com/gists/' + id, {
+    method: 'PATCH',
+    headers: {
+      Authorization: 'token ' + pat,
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.github.v3+json'
+    },
+    body: JSON.stringify({ files: body })
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.message || 'GitHub returned ' + r.status);
+  }
+}
+
+/* ── SYNC BADGE ── */
+function setSyncBadge(ok, msg) {
+  const b = document.getElementById('syncBadge');
+  b.className = 'sync-badge show ' + (ok ? 'ok' : 'fail');
+  b.textContent = ok ? '⬆ Synced' : '⚠ Offline';
+  b.title = msg || '';
+}
+
+/* ── INIT — load Gist first, then render ── */
+async function initLinks() {
+  renderGrid();
+  const { id } = getGistCfg();
+  if (!id) return;
   try {
-    const raw = localStorage.getItem('ecg_links');
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  const defaults = {};
-  APPS.forEach(a => defaults[a.id] = '');
-  return defaults;
-}
-function storeLinks(obj) {
-  localStorage.setItem('ecg_links', JSON.stringify(obj));
+    const links = await fetchGistLinks(id);
+    storeLinks(links);
+    renderGrid();
+    setSyncBadge(true);
+  } catch(e) {
+    console.warn('Gist load failed:', e.message);
+    setSyncBadge(false, e.message);
+  }
 }
 
-
-/* ─────────────────────────────────────────────
-   RENDER APP GRID
-───────────────────────────────────────────── */
+/* ── RENDER GRID ── */
 function renderGrid() {
   const links = getLinks();
   const grid  = document.getElementById('appGrid');
   grid.innerHTML = '';
-
   APPS.forEach(app => {
-    const url  = links[app.id] || '';
-
+    const url  = sanitizeUrl(links[app.id] || '');
     const item = document.createElement('div');
     item.className = 'app-item';
     item.setAttribute('role', 'button');
     item.setAttribute('tabindex', '0');
     item.setAttribute('aria-label', 'Open ' + app.name);
-
     item.innerHTML = `
       <div class="app-shell" id="shell-${app.id}">
-        <img
-          src="${app.icon}"
-          alt="${app.name} icon"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-        >
+        <img src="${app.icon}" alt="${app.name} icon"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="app-fallback" style="background:${app.fb}">${app.fi}</div>
       </div>
       <div class="app-name">${app.name}</div>
-      
-      
     `;
-
-    const launch = () => launchApp(app.id, url);
-    item.addEventListener('click', launch);
+    const go = () => launchApp(app.id, url, app.name);
+    item.addEventListener('click', go);
     item.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); launch(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
     });
-
     grid.appendChild(item);
   });
 }
 
-function launchApp(id, url) {
-  // Bounce animation
+/* ── LAUNCH (popup-blocker aware) ── */
+function launchApp(id, url, name) {
   const shell = document.getElementById('shell-' + id);
-  if (shell) {
-    shell.classList.remove('bouncing');
-    void shell.offsetWidth;          // reflow to restart animation
-    shell.classList.add('bouncing');
+  if (shell) { shell.classList.remove('bouncing'); void shell.offsetWidth; shell.classList.add('bouncing'); }
+  if (!url) {
+    alert('No link set for "' + name + '". Open Admin panel and add the URL.');
+    return;
   }
-  // Open link after a short delay (so animation is visible)
-  if (url && url !== '') {
-    setTimeout(() => window.open(url, '_blank'), 190);
-  }
+  setTimeout(() => {
+    const win = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      const banner = document.getElementById('popupBanner');
+      const link   = document.getElementById('popupLink');
+      link.href = url;
+      link.textContent = url;
+      banner.style.display = 'flex';
+    }
+  }, 190);
 }
 
-
-/* ─────────────────────────────────────────────
-   THEME TOGGLE  (with localStorage persistence)
-───────────────────────────────────────────── */
+/* ── THEME ── */
 let isLight = localStorage.getItem('ecg_theme') === 'light';
-
 function applyTheme() {
   document.body.classList.toggle('light', isLight);
-  const btn = document.getElementById('themeBtn');
-  btn.innerHTML = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+  document.getElementById('themeBtn').innerHTML = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
 }
-
 function toggleTheme() {
   isLight = !isLight;
   localStorage.setItem('ecg_theme', isLight ? 'light' : 'dark');
   applyTheme();
 }
+applyTheme();
 
-applyTheme();   // apply on load
-
-
-/* ─────────────────────────────────────────────
-   ADMIN MODAL CONTROL
-───────────────────────────────────────────── */
+/* ── ADMIN OPEN / CLOSE ── */
 function openAdmin() {
   document.getElementById('adminOverlay').classList.add('open');
   showScreen('loginScreen');
@@ -848,45 +618,25 @@ function openAdmin() {
   document.getElementById('adminPassInput').value = '';
   hide('loginErr');
 }
-
 function closeAdmin() {
   document.getElementById('adminOverlay').classList.remove('open');
 }
-
-// Close overlay if clicking outside the modal box
 document.getElementById('adminOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeAdmin();
 });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmin(); });
 
-// Close with Escape key
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeAdmin();
-});
-
-
-/* ─────────────────────────────────────────────
-   LOGIN
-───────────────────────────────────────────── */
+/* ── LOGIN / LOGOUT ── */
 function doLogin() {
   const pass = document.getElementById('adminPassInput').value;
-
-  if (!pass) {
-    showMsg('loginErr', 'Please enter the admin password.', true);
-    return;
-  }
-  if (pass !== getPass()) {
-    showMsg('loginErr', 'Incorrect password. Please try again.', true);
-    document.getElementById('adminPassInput').value = '';
-    return;
-  }
-
-  // Success
+  if (!pass)            { showMsg('loginErr', 'Please enter the admin password.', true); return; }
+  if (pass !== getPass()) { showMsg('loginErr', 'Incorrect password.', true); document.getElementById('adminPassInput').value = ''; return; }
   showScreen('adminScreen');
   hideScreen('loginScreen');
   buildLinksEditor();
   clearPassFields();
+  populateSyncSection();
 }
-
 function doLogout() {
   showScreen('loginScreen');
   hideScreen('adminScreen');
@@ -894,108 +644,129 @@ function doLogout() {
   hide('loginErr');
 }
 
-
-/* ─────────────────────────────────────────────
-   LINKS EDITOR
-───────────────────────────────────────────── */
+/* ── LINKS EDITOR ── */
 function buildLinksEditor() {
   const links = getLinks();
-  const ed    = document.getElementById('linksEditor');
+  const ed = document.getElementById('linksEditor');
   ed.innerHTML = '';
-
   APPS.forEach(app => {
     const row = document.createElement('div');
     row.className = 'link-row';
     row.innerHTML = `
       <span class="link-row-label">${app.name}</span>
-      <input
-        class="f-input f-input-url"
-        type="url"
-        id="url-${app.id}"
-        value="${links[app.id] || ''}"
-        placeholder="https://"
-      >
+      <input class="f-input f-input-url" type="url"
+             id="url-${app.id}"
+             value="${links[app.id] || ''}"
+             placeholder="https://">
     `;
     ed.appendChild(row);
   });
 }
 
-function saveLinks() {
+async function saveLinks() {
   const obj = {};
   APPS.forEach(a => {
     const el = document.getElementById('url-' + a.id);
-    obj[a.id] = el ? el.value.trim() : '';
+    obj[a.id] = sanitizeUrl(el ? el.value : '');
+    if (el) el.value = obj[a.id];
   });
   storeLinks(obj);
-  renderGrid();            // re-render so new links take effect immediately
+  renderGrid();
 
-  const msg = document.getElementById('saveOk');
-  msg.style.display = 'block';
-  setTimeout(() => msg.style.display = 'none', 2800);
+  const { id, pat } = getGistCfg();
+  if (id && pat) {
+    showMsg('saveOk', '⏳ Syncing to Gist...', false);
+    document.getElementById('saveOk').style.display = 'block';
+    hide('saveErr');
+    try {
+      await pushGistLinks(id, pat, obj);
+      showMsg('saveOk', '✓ Saved and synced! All users will see updated links.', false);
+      setSyncBadge(true);
+    } catch(e) {
+      hide('saveOk');
+      showMsg('saveErr', '⚠ Saved locally but Gist sync failed: ' + e.message, true);
+    }
+  } else {
+    showMsg('saveOk', '✓ Links saved locally. Set up Shared Sync below to share with all users.', false);
+    hide('saveErr');
+  }
 }
 
-
-/* ─────────────────────────────────────────────
-   CHANGE PASSWORD
-───────────────────────────────────────────── */
+/* ── CHANGE PASSWORD ── */
 function changePass() {
   const curr = document.getElementById('cpCurr').value;
   const nw   = document.getElementById('cpNew').value;
   const cf   = document.getElementById('cpConf').value;
-
   hide('cpErr'); hide('cpOk');
-
-  if (!curr || !nw || !cf) {
-    showMsg('cpErr', 'All three fields are required.', true); return;
-  }
-  if (curr !== getPass()) {
-    showMsg('cpErr', 'Current password is incorrect.', true); return;
-  }
-  if (nw.length < 6) {
-    showMsg('cpErr', 'New password must be at least 6 characters.', true); return;
-  }
-  if (nw !== cf) {
-    showMsg('cpErr', 'New passwords do not match.', true); return;
-  }
-
+  if (!curr || !nw || !cf)   { showMsg('cpErr', 'All three fields are required.', true); return; }
+  if (curr !== getPass())    { showMsg('cpErr', 'Current password is incorrect.', true); return; }
+  if (nw.length < 6)         { showMsg('cpErr', 'New password must be at least 6 characters.', true); return; }
+  if (nw !== cf)             { showMsg('cpErr', 'New passwords do not match.', true); return; }
   storePass(nw);
   clearPassFields();
   showMsg('cpOk', '✓ Password updated successfully!', false);
 }
-
 function clearPassFields() {
-  ['cpCurr', 'cpNew', 'cpConf'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
+  ['cpCurr', 'cpNew', 'cpConf'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   hide('cpErr'); hide('cpOk');
 }
 
+/* ── SYNC SECTION ── */
+function populateSyncSection() {
+  const { id, pat } = getGistCfg();
+  document.getElementById('gistId').value  = id;
+  document.getElementById('gistPat').value = pat;
+  document.getElementById('gistDefaultJson').value = JSON.stringify(getLinks(), null, 2);
+  hide('syncMsg');
+}
 
-/* ─────────────────────────────────────────────
-   HELPERS
-───────────────────────────────────────────── */
-function showScreen(id) { document.getElementById(id).classList.add('on'); }
-function hideScreen(id) { document.getElementById(id).classList.remove('on'); }
+async function saveSyncConfig() {
+  const id  = document.getElementById('gistId').value.trim();
+  const pat = document.getElementById('gistPat').value.trim();
+  if (!id || !pat) { showSyncMsg(false, 'Enter both Gist ID and GitHub Token.'); return; }
+  showSyncMsg(false, '⏳ Testing connection...');
+  document.getElementById('syncMsg').style.display = 'block';
+  try {
+    const links = await fetchGistLinks(id);
+    saveGistCfg(id, pat);
+    storeLinks(links);
+    renderGrid();
+    setSyncBadge(true);
+    showSyncMsg(true, '✓ Connected! Links loaded from Gist. All users are now synced.');
+  } catch(e) {
+    showSyncMsg(false, '✕ ' + e.message);
+  }
+}
 
-function showMsg(id, text, isErr) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.innerText = text;
-  el.className = 'f-msg ' + (isErr ? 'f-err' : 'f-ok');
+function clearSyncConfig() {
+  clearGistCfg();
+  document.getElementById('gistId').value  = '';
+  document.getElementById('gistPat').value = '';
+  document.getElementById('syncBadge').classList.remove('show');
+  showSyncMsg(false, 'Sync cleared. Links are stored locally only.');
+}
+
+function showSyncMsg(ok, txt) {
+  const el = document.getElementById('syncMsg');
+  el.textContent = txt;
+  el.className = 'f-msg ' + (ok ? 'f-ok' : 'f-err');
   el.style.display = 'block';
 }
 
-function hide(id) {
+/* ── HELPERS ── */
+function showScreen(id) { document.getElementById(id).classList.add('on'); }
+function hideScreen(id) { document.getElementById(id).classList.remove('on'); }
+function showMsg(id, txt, isErr) {
   const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'f-msg ' + (isErr ? 'f-err' : 'f-ok');
+  el.style.display = 'block';
 }
+function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
-
-/* ─────────────────────────────────────────────
-   INIT
-───────────────────────────────────────────── */
-renderGrid();
+/* ── BOOT ── */
+initLinks();
 
 </script>
 </body>
