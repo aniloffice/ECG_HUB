@@ -10,301 +10,118 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
     :root {
-      --bg:          #090d18;
-      --bg-alt:      #0f1624;
-      --surface:     #141d2f;
-      --surface-alt: #1a2540;
-      --border:      rgba(71,130,255,0.14);
-      --border-md:   rgba(71,130,255,0.28);
-      --accent:      #3b7ff5;
-      --accent-dk:   #2563d8;
-      --accent-glow: rgba(59,127,245,0.22);
-      --text-1:      #dde5f4;
-      --text-2:      #7f97c0;
-      --text-3:      #445a7a;
-      --success:     #22c55e;
-      --danger:      #f04040;
-      --modal-bg:    #0e1525;
-      --inp-bg:      #141d2f;
-      --inp-border:  rgba(71,130,255,0.20);
+      --bg:#090d18; --bg-alt:#0f1624; --surface:#141d2f; --surface-alt:#1a2540;
+      --border:rgba(71,130,255,0.14); --border-md:rgba(71,130,255,0.28);
+      --accent:#3b7ff5; --accent-dk:#2563d8; --accent-glow:rgba(59,127,245,0.22);
+      --text-1:#dde5f4; --text-2:#7f97c0; --text-3:#445a7a;
+      --success:#22c55e; --danger:#f04040; --warn:#f59e0b;
+      --modal-bg:#0e1525; --inp-bg:#141d2f; --inp-border:rgba(71,130,255,0.20);
     }
-
     body.light {
-      --bg:          #f2f6fd;
-      --bg-alt:      #e8eef9;
-      --surface:     #ffffff;
-      --surface-alt: #f5f8fe;
-      --border:      rgba(30,80,180,0.10);
-      --border-md:   rgba(30,80,180,0.25);
-      --accent:      #1a5ce5;
-      --accent-dk:   #1246c4;
-      --accent-glow: rgba(26,92,229,0.12);
-      --text-1:      #0b1628;
-      --text-2:      #3d5880;
-      --text-3:      #8097b8;
-      --success:     #16a34a;
-      --danger:      #d92020;
-      --modal-bg:    #ffffff;
-      --inp-bg:      #f5f8fe;
-      --inp-border:  rgba(30,80,180,0.18);
+      --bg:#f2f6fd; --bg-alt:#e8eef9; --surface:#ffffff; --surface-alt:#f5f8fe;
+      --border:rgba(30,80,180,0.10); --border-md:rgba(30,80,180,0.25);
+      --accent:#1a5ce5; --accent-dk:#1246c4; --accent-glow:rgba(26,92,229,0.12);
+      --text-1:#0b1628; --text-2:#3d5880; --text-3:#8097b8;
+      --success:#16a34a; --danger:#d92020; --warn:#b45309;
+      --modal-bg:#ffffff; --inp-bg:#f5f8fe; --inp-border:rgba(30,80,180,0.18);
     }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text-1); font-family:'Sora','Segoe UI',system-ui,sans-serif; min-height:100vh; transition:background 0.4s,color 0.4s; }
 
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text-1);
-      font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh;
-      transition: background 0.4s, color 0.4s;
-    }
+    /* POPUP BANNER */
+    #popupBanner { display:none; position:fixed; top:0; left:0; right:0; z-index:9999; background:#f59e0b; color:#000; padding:10px 20px; font-size:13px; font-weight:500; align-items:center; gap:10px; }
+    #popupBanner a { font-weight:700; color:#000; text-decoration:underline; word-break:break-all; }
+    .pb-close { margin-left:auto; flex-shrink:0; background:rgba(0,0,0,0.15); border:none; border-radius:5px; padding:3px 10px; cursor:pointer; font-weight:700; font-size:13px; color:#000; }
 
-    /* ── POPUP BLOCKED BANNER ── */
-    #popupBanner {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 9999;
-      background: #f59e0b;
-      color: #000;
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: 500;
-      align-items: center;
-      gap: 10px;
-      animation: slideDown 0.3s ease;
-    }
-    #popupBanner a {
-      font-weight: 700; color: #000;
-      text-decoration: underline; word-break: break-all;
-    }
-    .pb-close {
-      margin-left: auto; flex-shrink: 0;
-      background: rgba(0,0,0,0.15); border: none;
-      border-radius: 5px; padding: 3px 10px;
-      cursor: pointer; font-weight: 700;
-      font-size: 13px; color: #000;
-    }
-    @keyframes slideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to   { transform: translateY(0);     opacity: 1; }
-    }
+    /* SYNC BADGE */
+    .sync-badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:600; padding:2px 9px; border-radius:20px; opacity:0; transition:opacity 0.4s; }
+    .sync-badge.show { opacity:1; }
+    .sync-badge.ok   { background:rgba(34,197,94,0.12);  color:var(--success); }
+    .sync-badge.fail { background:rgba(240,64,64,0.10);  color:var(--danger);  }
+    .sync-badge.load { background:rgba(59,127,245,0.12); color:var(--accent);  }
 
-    /* ── SYNC BADGE ── */
-    .sync-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 10px; font-weight: 600; padding: 2px 9px;
-      border-radius: 20px; opacity: 0; transition: opacity 0.4s;
-    }
-    .sync-badge.show { opacity: 1; }
-    .sync-badge.ok   { background: rgba(34,197,94,0.12); color: var(--success); }
-    .sync-badge.fail { background: rgba(240,64,64,0.10); color: var(--danger); }
+    /* HEADER */
+    header { position:sticky; top:0; z-index:200; height:60px; padding:0 28px; background:var(--bg-alt); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; transition:background 0.4s,border-color 0.4s; }
+    .logo { display:flex; align-items:center; gap:11px; }
+    .logo-badge { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .logo-badge svg { width:30px; height:30px; }
+    .logo-name { font-size:15px; font-weight:700; color:var(--text-1); letter-spacing:-0.01em; }
+    .logo-sub  { font-size:10.5px; color:var(--text-2); margin-top:1px; }
+    .header-right { display:flex; align-items:center; gap:8px; }
+    .h-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--text-2); font-size:12px; font-weight:500; font-family:inherit; cursor:pointer; transition:all 0.2s; }
+    .h-btn:hover { background:var(--surface); color:var(--text-1); border-color:var(--border-md); }
+    .h-btn-accent { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .h-btn-accent:hover { background:var(--accent-dk); }
 
-    /* ── INFO BOX ── */
-    .info-box {
-      background: rgba(59,127,245,0.07);
-      border: 1px solid rgba(59,127,245,0.18);
-      border-radius: 9px; padding: 11px 13px;
-      font-size: 11.5px; color: var(--text-2);
-      line-height: 1.70; margin-bottom: 13px;
-    }
-    .info-box strong { color: var(--text-1); }
-    .info-box code {
-      background: rgba(59,127,245,0.12); color: var(--accent);
-      padding: 1px 5px; border-radius: 4px;
-      font-family: 'Consolas', 'Courier New', monospace; font-size: 11px;
-    }
+    /* MAIN */
+    main { max-width:980px; margin:0 auto; padding:26px 24px 60px; }
+    .status-bar { display:flex; align-items:center; gap:9px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); border-radius:9px; padding:9px 16px; font-size:11.5px; color:var(--text-2); margin-bottom:28px; }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:var(--success); flex-shrink:0; box-shadow:0 0 0 3px rgba(34,197,94,0.20); }
+    .sec-label { font-size:10.5px; font-weight:700; letter-spacing:0.11em; text-transform:uppercase; color:var(--text-3); margin-bottom:18px; }
 
-    /* ── HEADER ── */
-    header {
-      position: sticky; top: 0; z-index: 200;
-      height: 60px; padding: 0 28px;
-      background: var(--bg-alt);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background 0.4s, border-color 0.4s;
-    }
-    .logo { display: flex; align-items: center; gap: 11px; }
-    .logo-badge {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: background 0.4s;
-    }
-    .logo-badge svg { width: 30px; height: 30px; }
-    .logo-name { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.01em; }
-    .logo-sub  { font-size: 10.5px; font-weight: 400; color: var(--text-2); margin-top: 1px; }
-    .header-right { display: flex; align-items: center; gap: 8px; }
+    /* APP GRID */
+    .app-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:12px; }
+    .app-item { display:flex; flex-direction:column; align-items:center; gap:15px; padding:22px 10px 16px; border-radius:14px; cursor:pointer; border:1px solid var(--border); background:transparent; transition:background 0.22s,border-color 0.22s; user-select:none; outline:none; }
+    .app-item:hover { background:var(--surface); border-color:var(--border-md); }
+    .app-item:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+    .app-shell { width:100px; height:100px; border-radius:10px; overflow:hidden; flex-shrink:0; box-shadow:0 6px 18px rgba(0,0,0,0.40),0 1px 4px rgba(0,0,0,0.22); transition:transform 0.25s cubic-bezier(.34,1.56,.64,1),box-shadow 0.25s ease; background:var(--surface-alt); position:relative; }
+    .app-item:hover .app-shell { transform:scale(1.19) translateY(-20px); box-shadow:0 18px 36px rgba(0,0,0,0.42),0 4px 12px var(--accent-glow); }
+    .app-item:active .app-shell { transform:scale(0.91) translateY(1px); transition-duration:0.08s; }
+    .app-shell img { width:100%; height:100%; object-fit:cover; display:block; }
+    .app-fallback { width:100%; height:100%; display:none; align-items:center; justify-content:center; font-size:23px; font-weight:700; font-family:'Sora',sans-serif; color:rgba(255,255,255,0.92); }
+    .app-name { font-size:12px; font-weight:600; color:var(--text-1); text-align:center; line-height:1.3; max-width:126px; }
+    @keyframes appTap { 0%{transform:scale(1)} 30%{transform:scale(0.86) translateY(2px)} 65%{transform:scale(1.14) translateY(-6px)} 85%{transform:scale(0.97) translateY(-2px)} 100%{transform:scale(1) translateY(0)} }
+    .app-shell.bouncing { animation:appTap 0.38s cubic-bezier(.22,1,.36,1) forwards; }
 
-    .h-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 6px 13px; border-radius: 7px;
-      border: 1px solid var(--border); background: transparent;
-      color: var(--text-2); font-size: 12px; font-weight: 500;
-      font-family: inherit; cursor: pointer; transition: all 0.2s;
-    }
-    .h-btn:hover { background: var(--surface); color: var(--text-1); border-color: var(--border-md); }
-    .h-btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .h-btn-accent:hover { background: var(--accent-dk); color: #fff; border-color: var(--accent-dk); }
+    /* MODAL */
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); z-index:999; align-items:center; justify-content:center; padding:16px; }
+    .overlay.open { display:flex; }
+    .modal { background:var(--modal-bg); border:1px solid var(--border-md); border-radius:20px; width:100%; max-width:460px; max-height:90vh; overflow-y:auto; padding:24px 22px; box-shadow:0 30px 80px rgba(0,0,0,0.55); }
+    .modal::-webkit-scrollbar { width:4px; }
+    .modal::-webkit-scrollbar-thumb { background:var(--border-md); border-radius:2px; }
+    .modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .modal-title { font-size:16px; font-weight:700; color:var(--text-1); }
+    .modal-close { width:28px; height:28px; border:1px solid var(--border); border-radius:7px; background:transparent; color:var(--text-2); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.18s; font-family:inherit; }
+    .modal-close:hover { background:var(--surface-alt); color:var(--text-1); }
+    .screen { display:none; }
+    .screen.on { display:block; }
+    .f-group { margin-bottom:14px; }
+    .f-label { display:block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-2); margin-bottom:6px; }
+    .f-input { width:100%; padding:10px 12px; background:var(--inp-bg); border:1px solid var(--inp-border); border-radius:9px; color:var(--text-1); font-size:13px; font-family:inherit; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
+    .f-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+    .f-mono { font-family:'Consolas','Courier New',monospace; font-size:11.5px; }
+    .btn { width:100%; padding:10px; border:none; border-radius:9px; font-size:13px; font-weight:600; font-family:inherit; cursor:pointer; transition:background 0.2s,box-shadow 0.2s; }
+    .btn-blue  { background:var(--accent); color:#fff; }
+    .btn-blue:hover  { background:var(--accent-dk); box-shadow:0 4px 14px var(--accent-glow); }
+    .btn-ghost { background:transparent; color:var(--text-2); border:1px solid var(--border); margin-top:8px; }
+    .btn-ghost:hover { background:var(--surface-alt); color:var(--text-1); }
+    .btn-red  { background:transparent; color:var(--danger); border:1px solid rgba(240,64,64,0.25); }
+    .btn-red:hover  { background:rgba(240,64,64,0.07); }
+    .btn-row  { display:flex; gap:9px; margin-top:8px; }
+    .btn-row .btn { flex:1; }
+    .f-msg { font-size:11.5px; margin-top:8px; text-align:center; display:none; line-height:1.6; }
+    .f-err { color:var(--danger); }
+    .f-ok  { color:var(--success); }
+    .f-inf { color:var(--accent); }
+    .a-section { margin-bottom:22px; }
+    .a-section-title { font-size:12px; font-weight:700; color:var(--text-1); padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:14px; }
+    .link-row { margin-bottom:11px; }
+    .link-row-label { display:block; font-size:10.5px; font-weight:600; color:var(--text-2); margin-bottom:4px; }
 
-    /* ── MAIN ── */
-    main { max-width: 980px; margin: 0 auto; padding: 26px 24px 60px; }
-
-    .status-bar {
-      display: flex; align-items: center; gap: 9px;
-      background: rgba(34,197,94,0.06);
-      border: 1px solid rgba(34,197,94,0.15);
-      border-radius: 9px; padding: 9px 16px;
-      font-size: 11.5px; color: var(--text-2); margin-bottom: 28px;
-    }
-    .status-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--success); flex-shrink: 0;
-      box-shadow: 0 0 0 3px rgba(34,197,94,0.20);
-    }
-
-    .sec-label {
-      font-size: 10.5px; font-weight: 700;
-      letter-spacing: 0.11em; text-transform: uppercase;
-      color: var(--text-3); margin-bottom: 18px;
-    }
-
-    /* ── APP GRID ── */
-    .app-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-      gap: 12px;
-    }
-    .app-item {
-      display: flex; flex-direction: column; align-items: center; gap: 15px;
-      padding: 22px 10px 16px; border-radius: 14px; cursor: pointer;
-      border: 1px solid white; background: transparent;
-      transition: background 0.22s, border-color 0.22s;
-      user-select: none; -webkit-tap-highlight-color: transparent; outline: none;
-    }
-    .app-item:hover { background: var(--surface); border-color: var(--border-md); }
-    .app-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .app-shell {
-      width: 100px; height: 100px; border-radius: 10px;
-      overflow: hidden; flex-shrink: 0;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.40), 0 1px 4px rgba(0,0,0,0.22);
-      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease;
-      background: var(--surface-alt); position: relative;
-    }
-    .app-item:hover .app-shell {
-      transform: scale(1.19) translateY(-20px);
-      box-shadow: 0 18px 36px rgba(0,0,0,0.42), 0 4px 12px var(--accent-glow);
-    }
-    .app-item:active .app-shell {
-      transform: scale(0.91) translateY(1px);
-      box-shadow: 0 2px 8px rgba(236,233,233,0.28);
-      transition-duration: 0.08s;
-    }
-    .app-shell img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .app-fallback {
-      width: 100%; height: 100%; display: none;
-      align-items: center; justify-content: center;
-      font-size: 23px; font-weight: 700;
-      font-family: 'Sora', sans-serif;
-      color: rgba(255,255,255,0.92); letter-spacing: -0.5px;
-    }
-    .app-name { font-size: 12px; font-weight: 600; color: var(--text-1); text-align: center; line-height: 1.3; max-width: 126px; }
-
-    @keyframes appTap {
-      0%   { transform: scale(1); }
-      30%  { transform: scale(0.86) translateY(2px); }
-      65%  { transform: scale(1.14) translateY(-6px); }
-      85%  { transform: scale(0.97) translateY(-2px); }
-      100% { transform: scale(1) translateY(0px); }
-    }
-    .app-shell.bouncing { animation: appTap 0.38s cubic-bezier(.22,1,.36,1) forwards; }
-
-    /* ── ADMIN OVERLAY ── */
-    .overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      z-index: 999; align-items: center; justify-content: center; padding: 16px;
-    }
-    .overlay.open { display: flex; }
-
-    .modal {
-      background: var(--modal-bg); border: 1px solid var(--border-md);
-      border-radius: 20px; width: 100%; max-width: 430px;
-      max-height: 90vh; overflow-y: auto; padding: 24px 22px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.55); transition: background 0.4s;
-    }
-    .modal::-webkit-scrollbar { width: 4px; }
-    .modal::-webkit-scrollbar-track { background: transparent; }
-    .modal::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
-
-    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .modal-title { font-size: 16px; font-weight: 700; color: var(--text-1); }
-    .modal-close {
-      width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 7px;
-      background: transparent; color: var(--text-2); font-size: 15px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.18s; font-family: inherit;
-    }
-    .modal-close:hover { background: var(--surface-alt); color: var(--text-1); border-color: var(--border-md); }
-
-    .screen { display: none; }
-    .screen.on { display: block; }
-
-    .f-group { margin-bottom: 14px; }
-    .f-label {
-      display: block; font-size: 10.5px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.09em;
-      color: var(--text-2); margin-bottom: 6px;
-    }
-    .f-input {
-      width: 100%; padding: 10px 12px; background: var(--inp-bg);
-      border: 1px solid var(--inp-border); border-radius: 9px;
-      color: var(--text-1); font-size: 13px; font-family: inherit;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .f-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .f-input-url { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; }
-
-    .btn { width: 100%; padding: 10px; border: none; border-radius: 9px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; }
-    .btn-blue { background: var(--accent); color: #fff; }
-    .btn-blue:hover { background: var(--accent-dk); box-shadow: 0 4px 14px var(--accent-glow); }
-    .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); margin-top: 8px; }
-    .btn-ghost:hover { background: var(--surface-alt); color: var(--text-1); }
-    .btn-red { background: transparent; color: var(--danger); border: 1px solid rgba(240,64,64,0.25); }
-    .btn-red:hover { background: rgba(240,64,64,0.07); }
-
-    .f-msg { font-size: 11.5px; margin-top: 8px; text-align: center; display: none; }
-    .f-err { color: var(--danger); }
-    .f-ok  { color: var(--success); }
-
-    .a-section { margin-bottom: 22px; }
-    .a-section-title { font-size: 12px; font-weight: 700; color: var(--text-1); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
-    .link-row { margin-bottom: 11px; }
-    .link-row-label { display: block; font-size: 10.5px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
-    .btn-row { display: flex; gap: 9px; margin-top: 8px; }
-    .btn-row .btn { flex: 1; }
-
-    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border); }
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    footer { text-align:center; padding:20px; font-size:11px; color:var(--text-3); border-top:1px solid var(--border); }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
   </style>
 </head>
-
 <body>
 
-<!-- POPUP BLOCKED BANNER -->
+<!-- POPUP BANNER -->
 <div id="popupBanner">
-  <span>&#9888;&#65039; Popup blocked by browser. &nbsp;
-    <a id="popupLink" target="_blank" rel="noopener noreferrer">Click here to open the application &#8594;</a>
-  </span>
-  <button class="pb-close" onclick="document.getElementById('popupBanner').style.display='none'">&#10005;</button>
+  <span>⚠️ Popup blocked. &nbsp;<a id="popupLink" target="_blank" rel="noopener noreferrer">Click here to open →</a></span>
+  <button class="pb-close" onclick="document.getElementById('popupBanner').style.display='none'">✕</button>
 </div>
 
 <!-- HEADER -->
@@ -312,65 +129,55 @@
   <div class="logo">
     <div class="logo-badge">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <style>
-            .cls-1{fill:#4285f4;fill-rule:evenodd;}
-            .cls-2{fill:#1e88e5;fill-rule:evenodd;}
-            .cls-3{fill:#aecbfa;}
-            .cls-4{fill:#aecbfa;fill-rule:evenodd;}
-            .cls-5{fill:#669df6;}
-          </style>
-        </defs>
-        <polygon class="cls-1" points="20.69 12.43 12 16.78 12 22 20.69 17.65 20.69 12.43"></polygon>
-        <polygon class="cls-1" points="17.22 8.09 17.22 12.43 20.69 10.7 20.69 6.35 17.22 8.09"></polygon>
-        <polygon class="cls-1" points="12 15.04 15.48 13.31 15.48 8.96 12 10.7 12 15.04"></polygon>
-        <polygon class="cls-3" points="6.78 4.61 3.31 6.35 6.78 8.09 10.26 6.35 6.78 4.61"></polygon>
-        <polygon class="cls-4" points="12 2 8.52 3.74 12 5.48 17.22 8.09 20.69 6.35 12 2"></polygon>
-        <polygon class="cls-3" points="12 7.22 8.52 8.96 12 10.7 15.48 8.96 12 7.22"></polygon>
-        <path class="cls-5" d="M8.52,15v5.22L12,22V16.78Zm2.61,5.22-1.74-.87V16.78l1.74.87Z"></path>
-        <path class="cls-5" d="M3.31,6.35v11.3l3.47,1.74V8.09Zm2.61,11.3-1.75-.87v-10l1.75.87Z"></path>
-        <path class="cls-5" d="M8.52,9,12,10.7V15L8.52,13.31Zm2.61,4.35v-3L9.39,9.45v3Z"></path>
+        <defs><style>.c1{fill:#4285f4;fill-rule:evenodd}.c3{fill:#aecbfa}.c4{fill:#aecbfa;fill-rule:evenodd}.c5{fill:#669df6}</style></defs>
+        <polygon class="c1" points="20.69 12.43 12 16.78 12 22 20.69 17.65 20.69 12.43"/>
+        <polygon class="c1" points="17.22 8.09 17.22 12.43 20.69 10.7 20.69 6.35 17.22 8.09"/>
+        <polygon class="c1" points="12 15.04 15.48 13.31 15.48 8.96 12 10.7 12 15.04"/>
+        <polygon class="c3" points="6.78 4.61 3.31 6.35 6.78 8.09 10.26 6.35 6.78 4.61"/>
+        <polygon class="c4" points="12 2 8.52 3.74 12 5.48 17.22 8.09 20.69 6.35 12 2"/>
+        <polygon class="c3" points="12 7.22 8.52 8.96 12 10.7 15.48 8.96 12 7.22"/>
+        <path class="c5" d="M8.52,15v5.22L12,22V16.78Zm2.61,5.22-1.74-.87V16.78l1.74.87Z"/>
+        <path class="c5" d="M3.31,6.35v11.3l3.47,1.74V8.09Zm2.61,11.3-1.75-.87v-10l1.75.87Z"/>
+        <path class="c5" d="M8.52,9,12,10.7V15L8.52,13.31Zm2.61,4.35v-3L9.39,9.45v3Z"/>
       </svg>
     </div>
     <div>
       <div class="logo-name">ECG HUB</div>
-      <div class="logo-sub">Central landing page providing access to all ECG applications and services</div>
+      <div class="logo-sub">Central landing page providing access to all ECG applications</div>
     </div>
   </div>
   <div class="header-right">
-    <button class="h-btn" id="themeBtn" onclick="toggleTheme()">&#9728;&#65039; Light Mode</button>
-    <button class="h-btn h-btn-accent" onclick="openAdmin()">&#9881; Admin</button>
+    <button class="h-btn" id="themeBtn" onclick="toggleTheme()">☀️ Light Mode</button>
+    <button class="h-btn h-btn-accent" onclick="openAdmin()">⚙ Admin</button>
   </div>
 </header>
 
-<!-- MAIN -->
 <main>
   <div class="status-bar">
     <div class="status-dot"></div>
     <span>All systems operational</span>
-    <span style="margin-left:auto; opacity:.65">6 applications active</span>
+    <span style="margin-left:auto;opacity:.65">6 applications active</span>
     <span class="sync-badge" id="syncBadge"></span>
   </div>
   <div class="sec-label">Applications</div>
   <div class="app-grid" id="appGrid"></div>
 </main>
 
-<footer>&#169; 2026 ECG Application Team &nbsp;&middot;&nbsp; ECG Hub v2.1</footer>
+<footer>© 2026 ECG Application Team · ECG Hub v3.0</footer>
 
 <!-- ADMIN MODAL -->
 <div class="overlay" id="adminOverlay">
   <div class="modal">
 
-    <!-- LOGIN SCREEN -->
+    <!-- LOGIN -->
     <div class="screen on" id="loginScreen">
       <div class="modal-head">
-        <span class="modal-title">&#128272; Admin Access</span>
-        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">&#10005;</button>
+        <span class="modal-title">🔐 Admin Access</span>
+        <button class="modal-close" onclick="closeAdmin()">✕</button>
       </div>
       <div class="f-group">
-        <label class="f-label" for="adminPassInput">Admin Password</label>
-        <input class="f-input" type="password" id="adminPassInput"
-               placeholder="Enter password"
+        <label class="f-label">Admin Password</label>
+        <input class="f-input" type="password" id="adminPassInput" placeholder="Enter password"
                onkeydown="if(event.key==='Enter') doLogin()">
       </div>
       <button class="btn btn-blue" onclick="doLogin()">Login</button>
@@ -381,32 +188,32 @@
     <!-- ADMIN PANEL -->
     <div class="screen" id="adminScreen">
       <div class="modal-head">
-        <span class="modal-title">&#9881; Admin Panel</span>
-        <button class="modal-close" onclick="closeAdmin()" aria-label="Close">&#10005;</button>
+        <span class="modal-title">⚙ Admin Panel</span>
+        <button class="modal-close" onclick="closeAdmin()">✕</button>
       </div>
 
-      <!-- Application Links -->
+      <!-- APPLICATION LINKS -->
       <div class="a-section">
-        <div class="a-section-title">&#128206; Application Links</div>
+        <div class="a-section-title">📎 Application Links</div>
         <div id="linksEditor"></div>
         <div class="btn-row">
-          <button class="btn btn-blue" onclick="saveLinks()">&#128190; Save Links</button>
+          <button class="btn btn-blue" onclick="saveLinks()">💾 Save &amp; Publish to All Users</button>
           <button class="btn btn-red"  onclick="doLogout()">Logout</button>
         </div>
         <p class="f-msg f-ok"  id="saveOk"></p>
         <p class="f-msg f-err" id="saveErr"></p>
       </div>
 
-      <!-- Change Password -->
+      <!-- CHANGE PASSWORD -->
       <div class="a-section">
-        <div class="a-section-title">&#128273; Change Password</div>
+        <div class="a-section-title">🔑 Change Password</div>
         <div class="f-group">
           <label class="f-label">Current Password</label>
           <input class="f-input" type="password" id="cpCurr" placeholder="Current password">
         </div>
         <div class="f-group">
           <label class="f-label">New Password</label>
-          <input class="f-input" type="password" id="cpNew" placeholder="New password (min 6 chars)">
+          <input class="f-input" type="password" id="cpNew" placeholder="Min 6 characters">
         </div>
         <div class="f-group">
           <label class="f-label">Confirm New Password</label>
@@ -417,46 +224,17 @@
         <p class="f-msg f-ok"  id="cpOk"></p>
       </div>
 
-      <!-- SHARED SYNC (GitHub Gist) -->
-      <div class="a-section">
-        <div class="a-section-title">&#9729; Shared Sync &mdash; GitHub Gist</div>
-        <div class="info-box">
-          <strong>Why is this needed?</strong> Links saved above are stored only in
-          <em>your browser</em>. Other users on other computers see empty links.<br><br>
-          Connect a <strong>GitHub Gist</strong> and every user will automatically
-          load the same links when they open the hub.<br><br>
-          <strong>Filename must be exactly:</strong> <code>ecg-hub-links.json</code>
-        </div>
-        <div class="f-group">
-          <label class="f-label">Gist ID</label>
-          <input class="f-input f-input-url" type="text" id="gistId"
-                 placeholder="e.g. a1b2c3d4e5f6a1b2c3d4">
-        </div>
-        <div class="f-group">
-          <label class="f-label">GitHub Token (saved on this device only)</label>
-          <input class="f-input f-input-url" type="password" id="gistPat"
-                 placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-blue" onclick="saveSyncConfig()">&#128279; Save &amp; Test</button>
-          <button class="btn btn-red"  onclick="clearSyncConfig()">Clear Sync</button>
-        </div>
-        <p class="f-msg" id="syncMsg"></p>
-
-        <div style="margin-top:14px;">
-          <label class="f-label">Paste this JSON as your Gist file content</label>
-          <textarea class="f-input f-input-url" id="gistDefaultJson"
-                    rows="6" readonly
-                    style="resize:none; margin-top:6px; font-size:11px;"></textarea>
-        </div>
-      </div>
-
-    </div><!-- /adminScreen -->
+    </div>
   </div>
 </div>
 
 <script>
-/* ── APP DEFINITIONS ── */
+// ═══════════════════════════════════════════════════════
+//  ▼▼▼  PASTE YOUR APPS SCRIPT URL HERE  ▼▼▼
+// ═══════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPtrGd_gULWGdtW4uI3ZWCfnpXGGlzPZovv8EBy3Oz_-5aAJg9T7NizEfrP3RpX6_b/exec';
+// ═══════════════════════════════════════════════════════
+
 const APPS = [
   { id:'stores',    name:'ECG LOCKER',       icon:'stores.png',    fb:'#2563eb', fi:'IC' },
   { id:'ticket',    name:'ECG TICKET FORGE', icon:'ticket.png',    fb:'#7c3aed', fi:'IF' },
@@ -466,23 +244,16 @@ const APPS = [
   { id:'analytics', name:'ECG MASTER',       icon:'master.png',    fb:'#d97706', fi:'CA' }
 ];
 
-const GIST_FILE = 'ecg-hub-links.json';
 const _dp = atob('RUNHQDI=') + atob('MDI2');
-
-/* ── STORAGE ── */
-const getPass      = ()    => localStorage.getItem('ecg_pw') || _dp;
-const storePass    = p     => localStorage.setItem('ecg_pw', p);
-const storeLinks   = obj   => localStorage.setItem('ecg_links', JSON.stringify(obj));
-const getGistCfg   = ()    => ({ id: localStorage.getItem('ecg_gist_id') || '', pat: localStorage.getItem('ecg_gist_pat') || '' });
-const saveGistCfg  = (i,p) => { localStorage.setItem('ecg_gist_id', i); localStorage.setItem('ecg_gist_pat', p); };
-const clearGistCfg = ()    => { localStorage.removeItem('ecg_gist_id'); localStorage.removeItem('ecg_gist_pat'); };
+const getPass    = ()  => localStorage.getItem('ecg_pw') || _dp;
+const storePass  = p   => localStorage.setItem('ecg_pw', p);
+const storeLinks = obj => localStorage.setItem('ecg_links', JSON.stringify(obj));
 
 function getLinks() {
   try { const r = localStorage.getItem('ecg_links'); if (r) return JSON.parse(r); } catch(e) {}
-  const d = {}; APPS.forEach(a => d[a.id] = ''); return d;
+  const d = {}; APPS.forEach(a => d[a.id]=''); return d;
 }
 
-/* ── URL SANITISER ── */
 function sanitizeUrl(url) {
   if (!url) return '';
   url = url.trim();
@@ -490,217 +261,153 @@ function sanitizeUrl(url) {
   return url;
 }
 
-/* ── GIST API ── */
-async function fetchGistLinks(id) {
-  const r = await fetch('https://api.github.com/gists/' + id, {
-    headers: { Accept: 'application/vnd.github.v3+json' }
-  });
-  if (!r.ok) throw new Error('GitHub returned ' + r.status + '. Check your Gist ID.');
+// ── Apps Script: GET to read links ──
+async function fetchLinks() {
+  if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return null;
+  const r = await fetch(SCRIPT_URL, { redirect: 'follow' });
+  if (!r.ok) throw new Error('Server responded with ' + r.status);
   const data = await r.json();
-
-  // ── FIX: robust file lookup (exact → case-insensitive → first .json file → first file) ──
-  const files = data.files || {};
-  const fileKeys = Object.keys(files);
-
-  // 1. Exact match
-  let fileKey = fileKeys.find(k => k === GIST_FILE);
-
-  // 2. Case-insensitive match
-  if (!fileKey) {
-    fileKey = fileKeys.find(k => k.toLowerCase() === GIST_FILE.toLowerCase());
-  }
-
-  // 3. First .json file in the gist
-  if (!fileKey) {
-    fileKey = fileKeys.find(k => k.toLowerCase().endsWith('.json'));
-  }
-
-  // 4. Absolute fallback: first file
-  if (!fileKey && fileKeys.length > 0) {
-    fileKey = fileKeys[0];
-  }
-
-  if (!fileKey) {
-    throw new Error('No files found in this Gist. Make sure the Gist is not empty.');
-  }
-
-  // Warn in console if we fell back from the expected name
-  if (fileKey !== GIST_FILE) {
-    console.warn(
-      '[ECG Hub] Expected file "' + GIST_FILE + '" but found: ' + fileKeys.join(', ') +
-      '. Using "' + fileKey + '" instead. Rename the file to "' + GIST_FILE + '" for best results.'
-    );
-  }
-
-  let content = files[fileKey].content;
-
-  // Handle truncated files (large gists): fetch raw URL
-  if (files[fileKey].truncated) {
-    const raw = await fetch(files[fileKey].raw_url);
-    if (!raw.ok) throw new Error('Failed to fetch raw Gist content.');
-    content = await raw.text();
-  }
-
-  try {
-    return JSON.parse(content);
-  } catch(e) {
-    throw new Error('Gist file "' + fileKey + '" contains invalid JSON. Check the file contents.');
-  }
+  if (!data.ok) throw new Error(data.error || 'Server error');
+  return data.links;
 }
 
-async function pushGistLinks(id, pat, links) {
-  const body = {};
-  body[GIST_FILE] = { content: JSON.stringify(links, null, 2) };
-  const r = await fetch('https://api.github.com/gists/' + id, {
-    method: 'PATCH',
-    headers: {
-      Authorization: 'token ' + pat,
-      'Content-Type': 'application/json',
-      Accept: 'application/vnd.github.v3+json'
-    },
-    body: JSON.stringify({ files: body })
+// ── Apps Script: POST with JSON body to save links ──
+// Uses no-cors mode — Apps Script accepts this and processes correctly.
+// Because of no-cors we can't read the response, so we verify by re-fetching.
+async function pushLinks(links) {
+  if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE')
+    throw new Error('SCRIPT_URL not configured in HTML');
+
+  await fetch(SCRIPT_URL, {
+    method:   'POST',
+    mode:     'no-cors',          // required for Apps Script cross-origin POST
+    redirect: 'follow',
+    headers:  { 'Content-Type': 'text/plain' }, // text/plain avoids CORS preflight
+    body:     JSON.stringify({ links })
   });
-  if (!r.ok) {
-    const e = await r.json().catch(() => ({}));
-    throw new Error(e.message || 'GitHub returned ' + r.status);
+
+  // no-cors gives opaque response — verify save worked by re-reading after short delay
+  await new Promise(res => setTimeout(res, 1200));
+  const saved = await fetchLinks();
+  // Spot-check one key to confirm it was written
+  const keys = Object.keys(links);
+  if (keys.length > 0) {
+    const testKey = keys[0];
+    if (saved[testKey] !== links[testKey]) {
+      throw new Error('Publish may have failed — data mismatch after verify. Check Apps Script logs.');
+    }
   }
+  return { ok: true };
 }
 
-/* ── SYNC BADGE ── */
-function setSyncBadge(ok, msg) {
+// ── Sync badge ──
+function setSyncBadge(state, msg) {
   const b = document.getElementById('syncBadge');
-  b.className = 'sync-badge show ' + (ok ? 'ok' : 'fail');
-  b.textContent = ok ? '⬆ Synced' : '⚠ Offline';
+  const states = { ok:['ok','⬆ Synced'], fail:['fail','⚠ Offline'], load:['load','⏳ Loading'] };
+  const [cls, label] = states[state] || ['fail','⚠'];
+  b.className = 'sync-badge show ' + cls;
+  b.textContent = label;
   b.title = msg || '';
 }
 
-/* ── INIT — load Gist first, then render ── */
+// ── Init ──
 async function initLinks() {
   renderGrid();
-  const { id } = getGistCfg();
-  if (!id) return;
+  if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+  setSyncBadge('load');
   try {
-    const links = await fetchGistLinks(id);
-    storeLinks(links);
-    renderGrid();
-    setSyncBadge(true);
+    const links = await fetchLinks();
+    if (links) { storeLinks(links); renderGrid(); }
+    setSyncBadge('ok');
   } catch(e) {
-    console.warn('Gist load failed:', e.message);
-    setSyncBadge(false, e.message);
+    console.warn('Load failed:', e.message);
+    setSyncBadge('fail', e.message);
   }
 }
 
-/* ── RENDER GRID ── */
+// ── Render grid ──
 function renderGrid() {
   const links = getLinks();
   const grid  = document.getElementById('appGrid');
   grid.innerHTML = '';
   APPS.forEach(app => {
-    const url  = sanitizeUrl(links[app.id] || '');
+    const url = sanitizeUrl(links[app.id] || '');
     const item = document.createElement('div');
     item.className = 'app-item';
-    item.setAttribute('role', 'button');
-    item.setAttribute('tabindex', '0');
-    item.setAttribute('aria-label', 'Open ' + app.name);
+    item.setAttribute('role','button');
+    item.setAttribute('tabindex','0');
+    item.setAttribute('aria-label','Open ' + app.name);
     item.innerHTML = `
       <div class="app-shell" id="shell-${app.id}">
-        <img src="${app.icon}" alt="${app.name} icon"
+        <img src="${app.icon}" alt="${app.name}"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="app-fallback" style="background:${app.fb}">${app.fi}</div>
       </div>
-      <div class="app-name">${app.name}</div>
-    `;
+      <div class="app-name">${app.name}</div>`;
     const go = () => launchApp(app.id, url, app.name);
     item.addEventListener('click', go);
-    item.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-    });
+    item.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
     grid.appendChild(item);
   });
 }
 
-/* ── LAUNCH (popup-blocker aware) ── */
+// ── Launch ──
 function launchApp(id, url, name) {
-  const shell = document.getElementById('shell-' + id);
+  const shell = document.getElementById('shell-'+id);
   if (shell) { shell.classList.remove('bouncing'); void shell.offsetWidth; shell.classList.add('bouncing'); }
-  if (!url) {
-    alert('No link set for "' + name + '". Open Admin panel and add the URL.');
-    return;
-  }
+  if (!url) { alert('No link set for "'+name+'". Ask admin to add the URL.'); return; }
   setTimeout(() => {
-    const win = window.open(url, '_blank', 'noopener,noreferrer');
-    if (!win || win.closed || typeof win.closed === 'undefined') {
-      const banner = document.getElementById('popupBanner');
-      const link   = document.getElementById('popupLink');
-      link.href = url;
-      link.textContent = url;
-      banner.style.display = 'flex';
+    const win = window.open(url,'_blank','noopener,noreferrer');
+    if (!win||win.closed||typeof win.closed==='undefined') {
+      const l = document.getElementById('popupLink');
+      l.href = url; l.textContent = url;
+      document.getElementById('popupBanner').style.display='flex';
     }
   }, 190);
 }
 
-/* ── THEME ── */
-let isLight = localStorage.getItem('ecg_theme') === 'light';
+// ── Theme ──
+let isLight = localStorage.getItem('ecg_theme')==='light';
 function applyTheme() {
   document.body.classList.toggle('light', isLight);
   document.getElementById('themeBtn').innerHTML = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
 }
-function toggleTheme() {
-  isLight = !isLight;
-  localStorage.setItem('ecg_theme', isLight ? 'light' : 'dark');
-  applyTheme();
-}
+function toggleTheme() { isLight=!isLight; localStorage.setItem('ecg_theme',isLight?'light':'dark'); applyTheme(); }
 applyTheme();
 
-/* ── ADMIN OPEN / CLOSE ── */
+// ── Admin ──
 function openAdmin() {
   document.getElementById('adminOverlay').classList.add('open');
-  showScreen('loginScreen');
-  hideScreen('adminScreen');
-  document.getElementById('adminPassInput').value = '';
-  hide('loginErr');
+  showScreen('loginScreen'); hideScreen('adminScreen');
+  document.getElementById('adminPassInput').value=''; hide('loginErr');
 }
-function closeAdmin() {
-  document.getElementById('adminOverlay').classList.remove('open');
-}
-document.getElementById('adminOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeAdmin();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmin(); });
+function closeAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
+document.getElementById('adminOverlay').addEventListener('click', function(e){ if(e.target===this)closeAdmin(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape')closeAdmin(); });
 
-/* ── LOGIN / LOGOUT ── */
 function doLogin() {
   const pass = document.getElementById('adminPassInput').value;
-  if (!pass)            { showMsg('loginErr', 'Please enter the admin password.', true); return; }
-  if (pass !== getPass()) { showMsg('loginErr', 'Incorrect password.', true); document.getElementById('adminPassInput').value = ''; return; }
-  showScreen('adminScreen');
-  hideScreen('loginScreen');
-  buildLinksEditor();
-  clearPassFields();
-  populateSyncSection();
+  if (!pass)            { showMsg('loginErr','Please enter the admin password.',true); return; }
+  if (pass!==getPass()) { showMsg('loginErr','Incorrect password.',true); document.getElementById('adminPassInput').value=''; return; }
+  showScreen('adminScreen'); hideScreen('loginScreen');
+  buildLinksEditor(); clearPassFields();
 }
 function doLogout() {
-  showScreen('loginScreen');
-  hideScreen('adminScreen');
-  document.getElementById('adminPassInput').value = '';
-  hide('loginErr');
+  showScreen('loginScreen'); hideScreen('adminScreen');
+  document.getElementById('adminPassInput').value=''; hide('loginErr');
 }
 
-/* ── LINKS EDITOR ── */
 function buildLinksEditor() {
   const links = getLinks();
   const ed = document.getElementById('linksEditor');
-  ed.innerHTML = '';
+  ed.innerHTML='';
   APPS.forEach(app => {
     const row = document.createElement('div');
-    row.className = 'link-row';
-    row.innerHTML = `
+    row.className='link-row';
+    row.innerHTML=`
       <span class="link-row-label">${app.name}</span>
-      <input class="f-input f-input-url" type="url"
-             id="url-${app.id}"
-             value="${links[app.id] || ''}"
-             placeholder="https://">
-    `;
+      <input class="f-input f-mono" type="url" id="url-${app.id}"
+             value="${links[app.id]||''}" placeholder="https://">`;
     ed.appendChild(row);
   });
 }
@@ -708,108 +415,55 @@ function buildLinksEditor() {
 async function saveLinks() {
   const obj = {};
   APPS.forEach(a => {
-    const el = document.getElementById('url-' + a.id);
+    const el = document.getElementById('url-'+a.id);
     obj[a.id] = sanitizeUrl(el ? el.value : '');
     if (el) el.value = obj[a.id];
   });
   storeLinks(obj);
   renderGrid();
 
-  const { id, pat } = getGistCfg();
-  if (id && pat) {
-    showMsg('saveOk', '⏳ Syncing to Gist...', false);
-    document.getElementById('saveOk').style.display = 'block';
-    hide('saveErr');
-    try {
-      await pushGistLinks(id, pat, obj);
-      showMsg('saveOk', '✓ Saved and synced! All users will see updated links.', false);
-      setSyncBadge(true);
-    } catch(e) {
-      hide('saveOk');
-      showMsg('saveErr', '⚠ Saved locally but Gist sync failed: ' + e.message, true);
-    }
-  } else {
-    showMsg('saveOk', '✓ Links saved locally. Set up Shared Sync below to share with all users.', false);
-    hide('saveErr');
+  setSyncBadge('load');
+  showMsg('saveOk','⏳ Publishing to all users…',false);
+  document.getElementById('saveOk').style.display='block';
+  hide('saveErr');
+
+  try {
+    await pushLinks(obj);
+    showMsg('saveOk','✓ Published! All users will see updated links on next page load.',false);
+    setSyncBadge('ok');
+  } catch(e) {
+    hide('saveOk');
+    showMsg('saveErr','⚠ Saved locally but publish failed: ' + e.message, true);
+    setSyncBadge('fail', e.message);
   }
 }
 
-/* ── CHANGE PASSWORD ── */
 function changePass() {
-  const curr = document.getElementById('cpCurr').value;
-  const nw   = document.getElementById('cpNew').value;
-  const cf   = document.getElementById('cpConf').value;
+  const curr=document.getElementById('cpCurr').value;
+  const nw=document.getElementById('cpNew').value;
+  const cf=document.getElementById('cpConf').value;
   hide('cpErr'); hide('cpOk');
-  if (!curr || !nw || !cf)   { showMsg('cpErr', 'All three fields are required.', true); return; }
-  if (curr !== getPass())    { showMsg('cpErr', 'Current password is incorrect.', true); return; }
-  if (nw.length < 6)         { showMsg('cpErr', 'New password must be at least 6 characters.', true); return; }
-  if (nw !== cf)             { showMsg('cpErr', 'New passwords do not match.', true); return; }
-  storePass(nw);
-  clearPassFields();
-  showMsg('cpOk', '✓ Password updated successfully!', false);
+  if (!curr||!nw||!cf)  { showMsg('cpErr','All three fields are required.',true); return; }
+  if (curr!==getPass()) { showMsg('cpErr','Current password is incorrect.',true); return; }
+  if (nw.length<6)      { showMsg('cpErr','New password must be at least 6 characters.',true); return; }
+  if (nw!==cf)          { showMsg('cpErr','New passwords do not match.',true); return; }
+  storePass(nw); clearPassFields();
+  showMsg('cpOk','✓ Password updated successfully!',false);
 }
 function clearPassFields() {
-  ['cpCurr', 'cpNew', 'cpConf'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['cpCurr','cpNew','cpConf'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
   hide('cpErr'); hide('cpOk');
 }
 
-/* ── SYNC SECTION ── */
-function populateSyncSection() {
-  const { id, pat } = getGistCfg();
-  document.getElementById('gistId').value  = id;
-  document.getElementById('gistPat').value = pat;
-  document.getElementById('gistDefaultJson').value = JSON.stringify(getLinks(), null, 2);
-  hide('syncMsg');
-}
-
-async function saveSyncConfig() {
-  const id  = document.getElementById('gistId').value.trim();
-  const pat = document.getElementById('gistPat').value.trim();
-  if (!id || !pat) { showSyncMsg(false, 'Enter both Gist ID and GitHub Token.'); return; }
-  showSyncMsg(false, '⏳ Testing connection...');
-  document.getElementById('syncMsg').style.display = 'block';
-  try {
-    const links = await fetchGistLinks(id);
-    saveGistCfg(id, pat);
-    storeLinks(links);
-    renderGrid();
-    setSyncBadge(true);
-    showSyncMsg(true, '✓ Connected! Links loaded from Gist. All users are now synced.');
-  } catch(e) {
-    showSyncMsg(false, '✕ ' + e.message);
-  }
-}
-
-function clearSyncConfig() {
-  clearGistCfg();
-  document.getElementById('gistId').value  = '';
-  document.getElementById('gistPat').value = '';
-  document.getElementById('syncBadge').classList.remove('show');
-  showSyncMsg(false, 'Sync cleared. Links are stored locally only.');
-}
-
-function showSyncMsg(ok, txt) {
-  const el = document.getElementById('syncMsg');
-  el.textContent = txt;
-  el.className = 'f-msg ' + (ok ? 'f-ok' : 'f-err');
-  el.style.display = 'block';
-}
-
-/* ── HELPERS ── */
 function showScreen(id) { document.getElementById(id).classList.add('on'); }
 function hideScreen(id) { document.getElementById(id).classList.remove('on'); }
-function showMsg(id, txt, isErr) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = txt;
-  el.className = 'f-msg ' + (isErr ? 'f-err' : 'f-ok');
-  el.style.display = 'block';
+function showMsg(id,txt,isErr) {
+  const el=document.getElementById(id); if(!el)return;
+  el.textContent=txt; el.className='f-msg '+(isErr?'f-err':'f-ok'); el.style.display='block';
 }
-function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+function hide(id) { const el=document.getElementById(id); if(el)el.style.display='none'; }
 
-/* ── BOOT ── */
 initLinks();
-
 </script>
 </body>
 </html>
