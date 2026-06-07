@@ -31,10 +31,7 @@
     html { scroll-behavior:smooth; }
     body { background:var(--bg); color:var(--text-1); font-family:'Sora','Segoe UI',system-ui,sans-serif; min-height:100vh; transition:background 0.4s,color 0.4s; }
 
-    /* POPUP BANNER */
-    #popupBanner { display:none; position:fixed; top:0; left:0; right:0; z-index:9999; background:#f59e0b; color:#000; padding:10px 20px; font-size:13px; font-weight:500; align-items:center; gap:10px; }
-    #popupBanner a { font-weight:700; color:#000; text-decoration:underline; word-break:break-all; }
-    .pb-close { margin-left:auto; flex-shrink:0; background:rgba(0,0,0,0.15); border:none; border-radius:5px; padding:3px 10px; cursor:pointer; font-weight:700; font-size:13px; color:#000; }
+
 
     /* SYNC BADGE */
     .sync-badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:600; padding:2px 9px; border-radius:20px; opacity:0; transition:opacity 0.4s; }
@@ -118,11 +115,7 @@
 </head>
 <body>
 
-<!-- POPUP BANNER -->
-<div id="popupBanner">
-  <span>⚠️ Popup blocked. &nbsp;<a id="popupLink" target="_blank" rel="noopener noreferrer">Click here to open →</a></span>
-  <button class="pb-close" onclick="document.getElementById('popupBanner').style.display='none'">✕</button>
-</div>
+
 
 <!-- HEADER -->
 <header>
@@ -351,18 +344,19 @@ function renderGrid() {
   });
 }
 
-// ── Launch ──
+// ── Launch — uses <a> click so browsers never block it ──
 function launchApp(id, url, name) {
   const shell = document.getElementById('shell-'+id);
   if (shell) { shell.classList.remove('bouncing'); void shell.offsetWidth; shell.classList.add('bouncing'); }
   if (!url) { alert('No link set for "'+name+'". Ask admin to add the URL.'); return; }
   setTimeout(() => {
-    const win = window.open(url,'_blank','noopener,noreferrer');
-    if (!win||win.closed||typeof win.closed==='undefined') {
-      const l = document.getElementById('popupLink');
-      l.href = url; l.textContent = url;
-      document.getElementById('popupBanner').style.display='flex';
-    }
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }, 190);
 }
 
